@@ -1,0 +1,13 @@
+# Django core
+Django==2.0.5
+django-crispy-forms
+
+# Django-extensions
+django-extensions
+djangorestframework
+
+# DB
+psycopg2
+
+# Logging
+python-json-logger

@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  pokerstats:
+    build: ../
+    container_name: pokerstats
+    image: pokerstats
+    restart: unless-stopped
+    command: python manage.py runserver
+    ports:
+      - "8001:80"
+    volumes:
+    - ../:/app
+    depends_on:
+      - db
+    env_file: env
+
+  db:
+    image: postgres:10
+    restart: unless-stopped
+    expose:
+      - "5432"
+    env_file: env
