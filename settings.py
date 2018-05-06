@@ -25,7 +25,7 @@ SECRET_KEY = 'arwzvtwf^wtfbzk^!o54h@0m4u8nt1!_!&2mqm$mq6499r4pb+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', ]
 
 
 # Application definition
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pokerstats.context_processors.app_info'
             ],
         },
     },
@@ -135,9 +136,9 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser',
-    ],
-    'PAGE_SIZE': 10
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAdminUser',
+#     ],
+#     'PAGE_SIZE': 10
+# }

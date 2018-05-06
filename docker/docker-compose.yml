@@ -6,7 +6,7 @@ services:
     container_name: pokerstats
     image: pokerstats
     restart: unless-stopped
-    command: python manage.py runserver
+    command: python manage.py runserver 0:80
     ports:
       - "8001:80"
     volumes:
@@ -16,6 +16,7 @@ services:
     env_file: env
 
   db:
+    container_name: pokerstats_db
     image: postgres:10
     restart: unless-stopped
     expose:

@@ -3,10 +3,36 @@ from logging import getLogger
 from logging.config import dictConfig
 
 
-__version__ = '1.0.0'
-L = getLogger(__name__)
+DEFAULT_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '[%(asctime)s %(levelname)s %(name)s] %(message)s'
+        },
+        'json': {
+            'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'formatter': 'json',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'pokerstats': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+    }
+}
 
-# TODO: dictConfig logging
+dictConfig(DEFAULT_LOGGING)
+L = getLogger(__name__)
 
 
 def log_unhandled_error(exc_type, exc_value, exc_traceback):
@@ -14,5 +40,3 @@ def log_unhandled_error(exc_type, exc_value, exc_traceback):
 
 
 sys.excepthook = log_unhandled_error
-
-__all__ = ['__config__', 'config']
