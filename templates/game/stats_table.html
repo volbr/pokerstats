@@ -1,0 +1,24 @@
+<table class="table table-sm text-left mt-3">
+    <thead class="thead-default">
+    <tr>
+        <th>№</th>
+        <th>Player</th>
+        <th>Wins</th>
+        <th>Win total</th>
+        <th>Rebuys</th>
+        <th>Rebuy total</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for s in stats %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ s.username }}</td>
+            <td>{{ s.wins }}</td>
+            <td>{{ s.win_total|default_if_none:"" }}</td>
+            <td>{{ s.rebuys }}</td>
+            <td>{{ s.rebuy_total|default_if_none:"" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -7,7 +7,7 @@
 
 <div class="row justify-content-center">
     <div class="col-xl-4 col-lg-6 col-md-12">
-        <h1 class="mt-5 text-center">New game</h1>
+        <h1 class="mt-5 text-center">New Game</h1>
         <p class="lead text-center">Team: {{ request.user.player.current_team|title }}</p>
         <form method="POST">{% csrf_token %}
             {{ game_form | crispy }}
@@ -15,6 +15,5 @@
         </form>
     </div>
 </div>
-
 
 {% endblock content %}

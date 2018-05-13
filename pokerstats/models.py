@@ -36,7 +36,7 @@ class Game(models.Model):
     duration = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.created)
+        return str(self.created.strftime('%d/%m/%Y %H:%M'))
 
 
 class Round(models.Model):
@@ -44,14 +44,18 @@ class Round(models.Model):
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
-        return str(self.created)
+        return str(self.created.strftime('%d/%m/%Y %H:%M'))
 
 
 class RoundResult(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
-    combination = models.CharField(max_length=16, choices=COMBINATIONS_CHOICES, null=True, blank=True)
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    win = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    rebuy = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    combination = models.CharField(max_length=16, choices=COMBINATIONS_CHOICES, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.round} - {self.player}'
 
 
 class GameResult(models.Model):
@@ -60,9 +64,5 @@ class GameResult(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     place = models.IntegerField(null=True, blank=True)
 
-
-class BuyChips(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    def __str__(self):
+        return f'{self.game} - {self.player}'
