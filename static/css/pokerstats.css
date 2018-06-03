@@ -1,0 +1,22 @@
+.game-content {
+    margin-bottom: 130px;
+}
+
+.round-form input {
+    max-width: 55px;
+}
+
+.round-form select {
+    max-width: 150px;
+}
+
+.round-form .form-group {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

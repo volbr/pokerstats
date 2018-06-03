@@ -22,6 +22,7 @@ from pokerstats import views
 urlpatterns = [
     path('', views.home, name='home'),
     re_path(r'current_game/(?P<pk>\d+)$', views.current_game, name='current_game'),
+    re_path(r'finish_game/(?P<pk>\d+)$', views.finish_game, name='finish_game'),
 
     path('admin/', admin.site.urls),
     path('logout/', logout, name='logout'),

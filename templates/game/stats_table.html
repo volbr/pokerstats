@@ -1,23 +1,19 @@
 <table class="table table-sm text-left mt-3">
     <thead class="thead-default">
     <tr>
-        <th>№</th>
         <th>Player</th>
-        <th>Wins</th>
-        <th>Win total</th>
-        <th>Rebuys</th>
-        <th>Rebuy total</th>
+        <th>Total</th>
+        <th>Win</th>
+        <th>Rebuy</th>
     </tr>
     </thead>
     <tbody>
         {% for s in stats %}
         <tr>
-            <td>{{ forloop.counter }}</td>
             <td>{{ s.username }}</td>
-            <td>{{ s.wins }}</td>
-            <td>{{ s.win_total|default_if_none:"" }}</td>
-            <td>{{ s.rebuys }}</td>
-            <td>{{ s.rebuy_total|default_if_none:"" }}</td>
+            <td>{% if s.wins or s.rebuys %}{{ s.total }}{% endif %}</td>
+            <td>{% if s.wins %}x{{ s.wins }} ({{ s.win_total|default_if_none:"" }}){% endif %}</td>
+            <td>{% if s.rebuys %}x{{ s.rebuys }} ({{ s.rebuy_total|default_if_none:"" }}){% endif %}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -3,7 +3,7 @@
     <tr>
         <th>№</th>
         <th>Player</th>
-        <th>Win Stake</th>
+        <th>Stake</th>
         <th>Combination</th>
     </tr>
     </thead>
@@ -11,7 +11,7 @@
         {% for w in winners %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ w.player.user.username }}</td>
+            <td>{{ w.player.user.first_name }}</td>
             <td>{{ w.win }}</td>
             <td>{{ w.get_combination_display|default_if_none:"" }}</td>
         </tr>

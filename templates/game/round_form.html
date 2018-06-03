@@ -1,0 +1,33 @@
+{% load crispy_forms_tags %}
+
+<form class="round-form" method="POST" action="">{% csrf_token %}
+        <table class="table table-sm table text-left" style="margin-bottom: 0">
+        <thead class="header">
+            <tr>
+                <th>Player</th>
+                <th>Win</th>
+                <th>Rebuy</th>
+                <th>Combination</th>
+            </tr>
+        </thead>
+          <tbody>
+            {{ formset.management_form }}
+            {% for form in formset %}
+            {{ form.player }}
+            {{ form.round }}
+            {{ form.id }}
+            <tr>
+                <td>{{ form.instance.player.user.first_name }}</td>
+                <td>{{ form.win | as_crispy_field }}</td>
+                <td>{{ form.rebuy | as_crispy_field }}</td>
+                <td>{{ form.combination | as_crispy_field }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    <div class="row justify-content-center">
+        <div class="col-xl-4">
+            <button type="submit" class="btn btn-primary btn-lg btn-block mt-5">Save</button>
+        </div>
+    </div>
+</form>
