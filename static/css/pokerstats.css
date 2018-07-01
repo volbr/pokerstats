@@ -1,7 +1,3 @@
-.game-content {
-    margin-bottom: 130px;
-}
-
 .round-form input {
     max-width: 55px;
 }
@@ -20,3 +16,41 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.gradient {
+    background: linear-gradient(to right, white, #F5F5F5, white);
+}
+
+.jumbotron {
+    background-color: #F5F5F5;
+    color: gray;
+}
+
+.default-link {
+    /*color: #17a2b8;*/
+    color: black;
+}
+
+.default-link:hover {
+    text-decoration: none;
+    /*color: #118496;*/
+    color: #616161;
+}
+
+.logo-img {
+    width: 55px;
+    height: 55px;
+}
+
+.team-title {
+    margin-top: -30px;
+    margin-left: 30px;
+}
+
+/*.game-table-form .form-group {*/
+    /*margin-top: 9px;*/
+/*}*/
+
+/*.game-table-form .player {*/
+    /*margin-top: 9px;*/
+/*}*/

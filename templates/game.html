@@ -2,58 +2,24 @@
 {% load static %}
 
 
-{% block content %}
-<div class="game-content">
-    <div class="row justify-content-center">
-        <div class="col-xl-6 col-md-12 text-center">
-            <h1 class="mt-5">Current Game</h1>
-            <p class="lead d-inline-block mr-5">Team: {{ request.user.player.current_team|title }}</p>
-            <p class="lead d-inline-block">Initial stake: {{ game.init_stake }}</p>
-            <hr style="margin: 0">
-        </div>
-    </div>
-    <div class="row justify-content-center mt-5">
-        <div class="col-xl-6 col-md-12">
-            <h3>Round Winners</h3>
-            {% include "game/winners_table.html" %}
-        </div>
-        <div class="col-xl-6 col-md-12">
-            <h3>Statistics</h3>
-            {% include "game/stats_table.html" %}
-        </div>
-    </div>
-</div>
+{% block navbar %}
 
-<!-- Modal -->
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-label">Round Result</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body mt-3">
-                {% include "game/round_form.html" %}
-            </div>
-        </div>
+    <div class="col-3 mt-3">
+        <p class="lead">This game was played {{ object.created|date:"d.m.y" }}</p>
     </div>
-</div>
+
+{% endblock navbar %}
+
+
+{% block content %}
+
+    <div class="col-xl-4 col-lg-6 col-md-12 mt-3">
+        <h3>Round Winners</h3>
+        {% include "game/winners_table.html" %}
+    </div>
+    <div class="col-xl-4 offset-lg-1 col-lg-6 col-md-12 mt-3">
+        <h3>Statistics</h3>
+        {% include "game/stats_table.html" %}
+    </div>
 
 {% endblock content %}
-
-{% block footer %}
-    <div class="additional-footer">
-      <div class="container">
-          <div class="row justify-content-center mt-3">
-            <div class="col-xl-4 col-md-6 col-sm-12 mt-3">
-                <button class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modal">Save Round Result</button>
-            </div>
-            <div class="col-xl-4 offset-xl-2 col-md-6 col-sm-12 mt-3">
-                <a href="{% url "finish_game" pk=game.pk %}"><button class="btn btn-primary btn-lg btn-block">Finish Game</button></a>
-            </div>
-          </div>
-      </div>
-    </div>
-{% endblock %}

@@ -8,12 +8,12 @@
     </tr>
     </thead>
     <tbody>
-        {% for w in winners %}
+        {% for r in rounds %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ w.player.user.first_name }}</td>
-            <td>{{ w.win }}</td>
-            <td>{{ w.get_combination_display|default_if_none:"" }}</td>
+            <td>{{ r.winner.user.first_name }}</td>
+            <td>{{ r.winning }}</td>
+            <td>{{ r.get_combination_display|default_if_none:"" }}</td>
         </tr>
         {% endfor %}
     </tbody>

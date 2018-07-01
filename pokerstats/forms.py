@@ -1,7 +1,6 @@
 from django import forms
-from django.forms import modelformset_factory
 
-from .models import Game, RoundResult, Player
+from .models import Game, Rebuy, Round, GameResult
 
 
 class GameForm(forms.ModelForm):
@@ -12,23 +11,51 @@ class GameForm(forms.ModelForm):
         labels = {'init_stake': 'Initial Stake'}
         widgets = dict(players=forms.SelectMultiple(attrs=dict(size=7)))
 
-    def __init__(self, players, *args, **kwargs):
+    def __init__(self, players=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['players'].queryset = players
+        if players:
+            self.fields['players'].queryset = players
 
 
-class RoundResultForm(forms.ModelForm):
+class RebuyForm(forms.ModelForm):
 
     class Meta:
-        model = RoundResult
+        model = Rebuy
+        fields = ['player', 'amount', 'round']
+        widgets = dict(round=forms.HiddenInput())
+        labels = dict({f: '' for f in fields})
+
+    def __init__(self, players=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if players:
+            self.fields['player'].queryset = players
+
+
+class RoundForm(forms.ModelForm):
+
+    class Meta:
+        model = Round
+        fields = ['winner', 'winning', 'combination', 'game']
+        widgets = dict(game=forms.HiddenInput())
+        labels = dict({f: '' for f in fields})
+
+    def __init__(self, players=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if players:
+            self.fields['winner'].queryset = players
+
+
+class GameResultForm(forms.ModelForm):
+
+    class Meta:
+        model = GameResult
         empty_permitted = False
-        fields = ['id', 'round', 'player', 'win', 'rebuy', 'combination']
+        fields = ['id', 'game', 'player', 'stake']
         widgets = dict(
-            round=forms.HiddenInput(),
+            game=forms.HiddenInput(),
             player=forms.HiddenInput(),
             id=forms.HiddenInput(),
         )
         labels = dict({f: '' for f in fields})
 
-
-RoundResultFormset = modelformset_factory(RoundResult, form=RoundResultForm, extra=0)
+GameResultFormset = forms.modelformset_factory(GameResult, form=GameResultForm, extra=0)

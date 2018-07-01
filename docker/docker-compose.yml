@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     command: python manage.py runserver 0:80
     ports:
-      - "8001:80"
+      - "8000:80"
     volumes:
     - ../:/app
     depends_on:

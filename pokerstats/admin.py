@@ -9,9 +9,10 @@ class PlayerModelAdmin(admin.ModelAdmin):
     class Meta:
         model = models.models
 
+
 admin.site.register(models.Player, PlayerModelAdmin)
 admin.site.register(models.Team)
 admin.site.register(models.Game)
+admin.site.register(models.Rebuy)
 admin.site.register(models.Round)
-admin.site.register(models.RoundResult)
 admin.site.register(models.GameResult)

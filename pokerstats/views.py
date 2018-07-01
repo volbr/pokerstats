@@ -4,18 +4,17 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.generic.edit import FormView
+from django.views.generic.detail import DetailView
 from django.db.models import Sum, Count, Q, F, Max
 
-from .models import Game, GameResult, Round, RoundResult
-from .forms import GameForm, RoundResultFormset
+from .models import Game, GameResult, Round, Rebuy, Player
+from .forms import GameForm, RebuyForm, RoundForm, GameResultFormset, GameResultForm
 
 
 @login_required
 def home(request):
-    current_game = Game.objects.filter(finished__isnull=True).last()
-    if current_game:
-        url = reverse('current_game', kwargs={'pk': current_game.pk})
-        return HttpResponseRedirect(url)
     players = request.user.player.current_team.player_set.all()
     form = GameForm(players, request.POST or None)
     if request.POST and form.is_valid():
@@ -23,26 +22,21 @@ def home(request):
         instance.team = request.user.player.current_team
         instance.save()
         form.save_m2m()
+        game_results = [GameResult(player=player, game=instance) for player in instance.players.all()]
+        GameResult.objects.bulk_create(game_results)
         url = reverse('current_game', kwargs={'pk': instance.pk})
         return HttpResponseRedirect(url)
 
+    current_game = Game.objects.filter(finished__isnull=True).last()
+    games = Game.objects.filter(
+        team=request.user.player.current_team,
+        finished__isnull=False).select_related('best_result')
     context = {
         'form': form,
-        'games': Game.objects.filter(team=request.user.player.current_team).select_related('best_result')
+        'current_game': current_game,
+        'games': games
     }
     return render(request, 'home.html', context)
-
-
-def get_current_round_results(game):
-    current_results = RoundResult.objects.filter(round=game.round_set.last(), win__isnull=True)
-    if current_results.count() == game.players.count():
-        return current_results
-    current_results = []
-    round = Round.objects.create(game=game)
-    for player in game.players.all():
-        current_results.append(RoundResult(player=player, round=round))
-    RoundResult.objects.bulk_create(current_results)
-    return RoundResult.objects.filter(id__in=[r.id for r in current_results])
 
 
 @login_required
@@ -53,7 +47,7 @@ def finish_game(request, pk):
     game.finished = timezone.now()
     game.duration = int((game.finished - game.created).total_seconds())
     game_results = []
-    player_results = RoundResult.objects.game_stats(game)
+    player_results = []
     max_profit = 0
     best_result = None
     for r in player_results:
@@ -78,30 +72,64 @@ def finish_game(request, pk):
     url = reverse('home')
     return HttpResponseRedirect(url)
 
+
 @login_required
 def current_game(request, pk):
     game = Game.objects.get(id=pk)
-    if game.finished:
-        # TODO: send message
-        return HttpResponseRedirect(reverse('home'))
-
-    url = reverse('current_game', kwargs={'pk': game.pk})
+    current_round = game.round_set.count()
+    round, _ = Round.objects.get_or_create(game=game, winner__isnull=True)
+    players = game.players.all()
     if request.method == 'POST':
-        formset = RoundResultFormset(request.POST)
+        formset = GameResultFormset(request.POST)
         if formset.is_valid():
             formset.save()
+            game.finish()
         else:
             print(formset.errors)
-        return HttpResponseRedirect(url)
-
-    winners = RoundResult.objects.game_winners(game)
-    stats = RoundResult.objects.game_stats(game)
-    current_results = get_current_round_results(game)
-    formset = RoundResultFormset(queryset=current_results)
+        return HttpResponseRedirect(reverse('home'))
     context = {
         'game': game,
-        'winners': winners,
-        'stats': stats,
-        'formset': formset
+        'rounds': Round.objects.filter(game=game, winning__isnull=False).select_related('winner__user'),
+        'stats': game.game_stats(),
+        'round_form': RoundForm(players, instance=round),
+        'rebuy_form': RebuyForm(players, initial={'round': round}),
+        'game_formset': GameResultFormset(queryset=GameResult.objects.filter(game=game)),
+        'current_round': current_round,
     }
-    return render(request, 'game.html', context=context)
+    return render(request, 'current_game.html', context=context)
+
+
+
+class GameDetailView(DetailView):
+
+    model = Game
+    template_name = 'game.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rounds'] = Round.objects.filter(
+            game=self.object, winning__isnull=False).select_related('winner__user')
+        context['stats'] = self.object.game_stats()
+        return context
+
+
+class RebuyCreate(FormView):
+    form_class = RebuyForm
+
+    def form_valid(self, form):
+        instance = form.save()
+        return HttpResponseRedirect(reverse('current_game', kwargs={'pk': instance.round.game.pk}))
+
+    def form_invalid(self, form):
+        print(form.errors)
+
+
+class RoundUpdate(FormView):
+    form_class = RoundForm
+
+    def form_valid(self, form):
+        instance = form.save()
+        return HttpResponseRedirect(reverse('current_game', kwargs={'pk': instance.game.pk}))
+
+    def form_invalid(self, form):
+        print(form.errors)
