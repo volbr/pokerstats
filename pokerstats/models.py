@@ -1,8 +1,7 @@
-from datetime import timedelta
 from enum import Enum
 
 from django.db import models
-from django.db.models import Sum, Count, Q, F, Subquery, OuterRef, Value
+from django.db.models import Sum, F, Subquery, OuterRef
 from django.db.models.signals import post_save
 from django.db.models.functions import Coalesce
 from django.dispatch import receiver
@@ -100,38 +99,41 @@ class Game(models.Model):
     def finish(self):
         self.finished = timezone.now()
         self.duration = (self.finished - self.created).total_seconds() // 60
-        self.set_best_param('combination')
-        self.set_best_param('winning')
-        self.set_best_result()
+        results = self.gameresult_set.all()
+        self.set_best(results, 'combination')
+        self.set_best(results, 'winning')
+        self.set_best_result(results)
         self.save()
 
     def get_rounds(self):
         return self.round_set.count() - 1
 
-    def set_best_param(self, param):
-        best_result = None
-        best = None
-        for result in self.gameresult_set.all():
+    def set_best(self, results, param):
+        best_result, best = None, None
+        for result in results:
             best_result_player = getattr(result, f'best_{param}')
             if best_result_player is None:
                 continue
             val = getattr(best_result_player, param)
+            if val is None:
+                continue
             if best is None:
                 best = val
-            if val and val < best:
+            if val < best:
                 continue
-            best_result = result
-        round = getattr(best_result, f'best_{param}')
-        setattr(self, f'best_{param}', round)
+            best_result, best = result, val
+        best_round = getattr(best_result, f'best_{param}')
+        setattr(self, f'best_{param}', best_round)
 
-    def set_best_result(self):
-        best = None
-        for result in self.gameresult_set.all():
+    def set_best_result(self, results):
+        best_result, best = None, None
+        for result in results:
             if best is None:
                 best = result.profit
             if result.profit < best:
                 continue
-            self.best_result = result
+            best_result, best = result, result.profit
+        self.best_result = best_result
 
     def game_stats(self):
         win_total = Round.objects.filter(game=OuterRef('game'), winner=OuterRef('pk'))
@@ -183,23 +185,27 @@ class GameResult(models.Model):
     best_winning = models.ForeignKey(
         'pokerstats.Round', related_name='best_player_winning', null=True, blank=True, on_delete=models.CASCADE)
 
-    def set_best_param(self, param):
-        best_round = None
-        best = 0
-        for round in Round.objects.filter(game=self.game, winner=self.player):
+    def set_best(self, rounds, param):
+        best_round, best = None, None
+        for round in rounds:
             val = getattr(round, param)
-            if val and val < best:
+            if val is None:
                 continue
-            best_round = round
+            if best is None:
+                best = val
+            if val < best:
+                continue
+            best_round, best = round, val
         setattr(self, f'best_{param}', best_round)
 
     def save(self, *args, **kwargs):
-        if self.stake:
-            self.rebuy = Rebuy.objects.filter(round__game=self.game, player=self.player).aggregate(Sum('amount'))['amount__sum']
-            rebuy = self.rebuy if self.rebuy else 0
-            self.profit = self.stake - rebuy - self.game.init_stake
-            self.set_best_param('winning')
-            self.set_best_param('combination')
+        if self.stake is not None:
+            rebuy = Rebuy.objects.filter(round__game=self.game, player=self.player).aggregate(Sum('amount'))['amount__sum']
+            self.rebuy = rebuy if rebuy is not None else 0
+            self.profit = self.stake - self.rebuy - self.game.init_stake
+            rounds = Round.objects.filter(game=self.game, winner=self.player)
+            self.set_best(rounds, 'winning')
+            self.set_best(rounds, 'combination')
 
         super().save(*args, **kwargs)
 

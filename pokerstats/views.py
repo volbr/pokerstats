@@ -2,15 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.core.exceptions import PermissionDenied
-from django.utils import timezone
-from django.http import JsonResponse
 from django.views.generic.edit import FormView
 from django.views.generic.detail import DetailView
-from django.db.models import Sum, Count, Q, F, Max
 
-from .models import Game, GameResult, Round, Rebuy, Player
-from .forms import GameForm, RebuyForm, RoundForm, GameResultFormset, GameResultForm
+from .models import Game, GameResult, Round
+from .forms import GameForm, RebuyForm, RoundForm, GameResultFormset
 
 
 @login_required
@@ -37,40 +33,6 @@ def home(request):
         'games': games
     }
     return render(request, 'home.html', context)
-
-
-@login_required
-def finish_game(request, pk):
-    game = Game.objects.get(id=pk)
-    if request.user.player not in game.players.all():
-        raise PermissionDenied
-    game.finished = timezone.now()
-    game.duration = int((game.finished - game.created).total_seconds())
-    game_results = []
-    player_results = []
-    max_profit = 0
-    best_result = None
-    for r in player_results:
-        profit = r['total'] - game.init_stake
-        player = game.players.get(id=r['player'])
-        result = GameResult(
-            game=game,
-            player=player,
-            win=r['win_total'],
-            rebuy=r['rebuy_total'],
-            profit=profit
-        )
-        game_results.append(result)
-        if profit > max_profit:
-            best_result = result
-    if best_result is not None:
-        GameResult.objects.bulk_create(game_results)
-        game.best_result = best_result
-        game.save()
-    else:
-        game.delete()
-    url = reverse('home')
-    return HttpResponseRedirect(url)
 
 
 @login_required

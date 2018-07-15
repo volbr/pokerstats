@@ -6,11 +6,11 @@ services:
     container_name: pokerstats
     image: pokerstats
     restart: unless-stopped
-    command: python manage.py runserver 0:80
+    command: python manage.py runserver --insecure 0:80
     ports:
-      - "8000:80"
-    volumes:
-    - ../:/app
+      - "80:80"
+#    volumes:
+#    - ../:/app
     depends_on:
       - db
     env_file: env
