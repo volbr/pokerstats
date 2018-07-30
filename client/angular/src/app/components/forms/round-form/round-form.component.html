@@ -1,0 +1,55 @@
+<div class="modal fade" id="modal-round" tabindex="-1" role="dialog" aria-labelledby="modal-round-label"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-round-label">Finish Round</h5>
+        <button #closeModal type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mt-3">
+        <div class="row justify-content-center">
+          <div class="col-xl-8 col-lg-10">
+
+            <form #form="ngForm" (submit)="onSubmit()">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="winner">Winner</label>
+                  <select
+                    [(ngModel)]="round.winner"
+                    name="winner" id="winner" class="form-control" required>
+                      <option [ngValue]="null" disabled>Select ...</option>
+                      <option *ngFor="let gamePlayer of game.players" [ngValue]="gamePlayer.id">{{ gamePlayer.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="winning">Winning</label>
+                  <input
+                    [(ngModel)]="round.winning"
+                    [ngClass]="{'is-invalid': winning.errors && winning.touched}"
+                    #winning="ngModel"
+                    type="number" name="winning" id="winning" class="form-control" required>
+                  <div class="invalid-feedback">
+                    Input a number
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="combination">Combination</label>
+                  <select
+                    [(ngModel)]="round.combination"
+                    name="combination" id="combination" class="form-control">
+                      <option [ngValue]="null" disabled>Select ...</option>
+                      <option *ngFor="let combination of combinations; let i = index" [ngValue]="i + 1">{{ combination }}</option>
+                  </select>
+              </div>
+              <button [disabled]="form.invalid" type="submit" class="btn btn-outline-dark btn-block mt-5">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

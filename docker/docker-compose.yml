@@ -1,24 +1,41 @@
 version: '3'
 services:
 
-  pokerstats:
-    build: ../
-    container_name: pokerstats
-    image: pokerstats
+  nginx:
+    build: nginx/
+    image: pstats_nginx
+    container_name: pstats_nginx
     restart: unless-stopped
-    command: python manage.py runserver --insecure 0:80
+    volumes:
+      - static:/var/www/pstats
+#      - ../server/static_root:/var/www/pstats
     ports:
       - "80:80"
-#    volumes:
-#    - ../:/app
+
+  pstats:
+    build: ../server
+    image: pstats
+    container_name: pstats
+    restart: unless-stopped
+    command: python manage.py runserver 0:80
+    volumes:
+#      - ../server/:/app
+      - static:/app/static_root
     depends_on:
       - db
-    env_file: env
+    expose:
+      - "80"
+    env_file:
+      - .env
 
   db:
-    container_name: pokerstats_db
     image: postgres:10
+    container_name: pstats_db
     restart: unless-stopped
     expose:
       - "5432"
-    env_file: env
+    env_file:
+      - .env
+
+volumes:
+  static:

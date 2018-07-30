@@ -1,0 +1,84 @@
+<div *ngIf="game && currentGame && game.creator == player.id" class="row justify-content-center gradient">
+  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 mt-2">
+    <button [ngClass]="{'disabled': game && !game.rounds.length}" class="btn btn-outline-dark btn btn-block" data-toggle="modal" data-target="#modal-rebuy">Add Rebuy</button>
+  </div>
+  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 mt-2">
+    <button class="btn btn-outline-dark btn btn-block" data-toggle="modal" data-target="#modal-round">Finish Round</button>
+  </div>
+  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 mt-2 mb-2">
+    <button [ngClass]="{'disabled': game && !game.rounds.length }" class="btn btn-outline-danger btn btn-block" data-toggle="modal" data-target="#modal-game">Finish Game</button>
+  </div>
+</div>
+
+<div *ngIf="game && currentGame && game.creator !== player.id" class="row justify-content-center gradient">
+  <div class="col mt-3 text-center">
+      <p class="lead">View only mode</p>
+  </div>
+</div>
+
+<div *ngIf="game && !currentGame" class="row gradient">
+  <div class="col mt-3 text-center">
+      <p class="lead">This game was played {{ game.created | date: 'dd.MM.yy' }}</p>
+  </div>
+</div>
+
+<div *ngIf="game && game.rounds.length" class="row justify-content-center">
+  <div class="col-xl-4 col-lg-6 col-md-12 mt-3">
+    <h3>Round Winners</h3>
+    <table class="table table-sm text-left mt-3">
+      <thead class="thead-default">
+      <tr>
+        <th>№</th>
+        <th>Player</th>
+        <th>Stake</th>
+        <th>Combination</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let round of game.rounds; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ round.winner }}</td>
+        <td>{{ round.winning }}</td>
+        <td>{{ round.combination }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-xl-4 offset-xl-1 col-lg-6 col-md-12 mt-3">
+    <h3>Statistics</h3>
+    <table class="table table-sm text-left mt-3">
+      <thead class="thead-default">
+      <tr>
+        <th>№</th>
+        <th>Player</th>
+        <th>Total</th>
+        <th>Win</th>
+        <th>Rebuy</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let s of game.stats; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>
+          <span *ngIf="!i" class="font-weight-bold text-danger">{{ s.username }}</span>
+          <span *ngIf="i">{{ s.username }}</span>
+        </td>
+        <td><span *ngIf="s.wins || s.rebuys">{{ s.total | number:'.2' }}</span></td>
+        <td><span *ngIf="s.wins">x{{ s.wins }} ({{ s.win_total | number:'.2' }})</span></td>
+        <td><span *ngIf="s.rebuys">x{{ s.rebuys }} ({{ s.rebuy_total | number:'.2' }})</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="game && !game.rounds.length" class="row justify-content-center">
+  <div class="jumbotron mt-5">
+    <h4>Finish at least one round to get statistics</h4>
+  </div>
+</div>
+
+<app-rebuy-form (newRebuyEvent)="updateGame(game.id)" *ngIf="game" [game]="game"></app-rebuy-form>
+<app-round-form (newRoundEvent)="updateGame(game.id)" *ngIf="game" [game]="game"></app-round-form>
+<app-finish-game-form *ngIf="game" [game]="game"></app-finish-game-form>

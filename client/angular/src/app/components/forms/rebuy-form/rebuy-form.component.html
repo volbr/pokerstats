@@ -1,0 +1,44 @@
+<div class="modal fade" id="modal-rebuy" tabindex="-1" role="dialog"
+     aria-labelledby="modal-rebuy-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-rebuy-label">Add Rebuy</h5>
+        <button #closeModal type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mt-3">
+        <div class="row justify-content-center">
+          <div class="col-xl-8 col-lg-10">
+
+            <form #form="ngForm" (submit)="onSubmit()">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="player">Player</label>
+                  <select [(ngModel)]="rebuy.player" name="player" id="player" class="form-control" required>
+                      <option [ngValue]="null" disabled>Select ...</option>
+                      <option *ngFor="let gamePlayer of game.players" [ngValue]="gamePlayer.id">{{ gamePlayer.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="amount">Amount</label>
+                  <input
+                    [(ngModel)]="rebuy.amount"
+                    [ngClass]="{'is-invalid': rebuyAmount.errors && rebuyAmount.touched}"
+                    #rebuyAmount="ngModel"
+                    name="amount" id="amount" type="number" class="form-control" required>
+                  <div class="invalid-feedback">
+                    Input a number
+                  </div>
+                </div>
+              </div>
+              <button [disabled]="form.invalid" class="btn btn-outline-dark btn-block mt-5">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
