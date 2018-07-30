@@ -1,4 +1,3 @@
-# pokerstats
-This app's main purpose is to make playing poker more interesting through making stats history. Also it's a pet project for trying django vs angular.
-
-TODO: Add Angular readme
+# Pokerstats
+This app's main purpose is to make poker more interesting through making stats history instead of enlarging game stakes.
+Also it's a pet project for trying Django vs Angular.
