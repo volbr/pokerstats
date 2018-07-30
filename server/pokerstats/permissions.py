@@ -1,12 +1,16 @@
 from rest_framework.permissions import BasePermission
 
-from .models import Game
+from .models import Game, Round, Rebuy
 
 
 class IsOwnerPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if request.user.is_staff:
-            return True
+        player = request.user.player
         if type(obj) == Game:
-            return request.user.player in obj.team.players.all()
+            return player in obj.team.players.all()
+        elif type(obj) == Round:
+            return player.current_team == obj.game.team
+        elif type(obj) == Rebuy:
+            return player.current_team == obj.round.game.team
+        return True
