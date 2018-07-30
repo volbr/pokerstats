@@ -1,0 +1,59 @@
+.gradient {
+    background: linear-gradient(to right, white, #F5F5F5, white);
+}
+
+.gradient-warning {
+    background: linear-gradient(to right, white, #FFF59D, white);
+}
+
+.gradient-info {
+    background: linear-gradient(to right, white, #B2EBF2, white);
+}
+
+.player-selected {
+  text-shadow: 1px 2px #6D4C41;
+  color: white;
+}
+
+.players-menu {
+  background-color: #dc3545;
+  color: #F5F5F5;
+  border-radius: .25rem
+}
+
+.default-link {
+    color: black;
+}
+
+.default-link:hover {
+    text-decoration: none;
+    color: #616161;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative!important;
+  min-height: 100%!important;
+}
+body {
+  margin-bottom: 60px!important; /* Margin bottom by footer height */
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Set the fixed height of the footer here */
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #F5F5F5;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.container {
+  width: auto;
+  max-width: 1380px;
+  padding: 0 15px;
+}

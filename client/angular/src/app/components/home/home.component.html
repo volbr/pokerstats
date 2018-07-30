@@ -1,0 +1,20 @@
+<main role="main" class="container">
+  <div class="row justify-content-center mb-3">
+    <div class="col text-center">
+        <img class="mb-4 logo-img mr-3" src="assets/images/logo.png" alt="">
+        <h1 class="mt-3 d-inline-block">
+          <a class="default-link" routerLink="/">
+            PokerStats
+          </a>
+        </h1>
+        <p class="lead mb-0 team-title">Team: {{ currentTeam }}</p>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <div class="container">
+      <span class="text-muted">PokerStats v.1.0.0</span>
+  </div>
+</footer>

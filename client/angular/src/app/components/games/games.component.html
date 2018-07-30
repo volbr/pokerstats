@@ -1,0 +1,103 @@
+<div class="row justify-content-center gradient">
+  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 mt-2 mb-2">
+    <a *ngIf="!!game" routerLink="/home/game"
+       class="btn btn-outline-danger btn btn-block">Game in progress...
+    </a>
+    <button *ngIf="!game" data-toggle="modal" data-target="#modal-game"
+            class="btn btn-outline-danger btn btn-block">Start New Game
+    </button>
+  </div>
+</div>
+
+<div *ngIf="games" [ngClass]="{'justify-content-center': games.length < 4}" class="row mt-3">
+    <div *ngFor="let game of games" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card card-bookie">
+            <div class="card-header pb-0 pl-2 pr-2 bg-transparent">
+              <div class="row">
+                    <div class="col">
+                        <h4 class="card-title text-left">
+                            {{ game.created | date: 'dd.MM.yy' }}
+                        </h4>
+                    </div>
+                    <div class="col text-right">
+                        <h4><i class="fa fa-trophy text-warning" aria-hidden="true"></i> {{ game.best_result.player.name }}</h4>
+                    </div>
+              </div>
+              <div class="row justify-content-center players-menu">
+                <p class="mb-1 mt-1">
+                  <ng-container *ngFor="let result of game.results; let last = last; let i = index">
+                    <span (click)="changeSelected(game.id, result.player.id)"
+                          [ngClass]="{'font-weight-bold player-selected': result.player.id == game.selected}"
+                          style="cursor: pointer;">
+                      {{ result.player.name }}</span><ng-container *ngIf="!last">, </ng-container>
+                  </ng-container>
+                </p>
+              </div>
+            </div>
+            <div class="card-body pb-0 pt-0">
+                <div class="row mt-3 justify-content-center gradient">
+                  <p class="mb-0">Personal Stats</p>
+                </div>
+                <div class="row mt-2">
+                  <ng-container *ngFor="let result of game.results; let last = last;">
+                    <div *ngIf="result.player.id == game.selected" class="col">
+                      <div class="row">
+                        <div class="col">Game Profit:</div>
+                        <div class="col">{{ result.profit }}</div>
+                      </div>
+                      <div class="row">
+                        <div class="col">Combination:</div>
+                        <div class="col">
+                          <ng-container *ngIf="result.best_combination">
+                            {{ result.best_combination }}
+                          </ng-container>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">Round Winning:</div>
+                        <div class="col">
+                          <ng-container *ngIf="result.best_winning">
+                            {{ result.best_winning }}
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="row mt-2 mb-2 justify-content-center gradient">
+                  <p class="mb-0">Awards</p>
+                </div>
+                <div class="row">
+                    <div class="col">Combination:</div>
+                    <div class="col">
+                      <ng-container *ngIf="game.best_combination">{{ game.best_combination.winner }}</ng-container>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col">Round Winning:</div>
+                    <div class="col">{{ game.best_winning.winner }}</div>
+                </div>
+                <div class="row mt-2 mb-2 justify-content-center gradient">
+                  <p class="mb-0">Info</p>
+                </div>
+                <div class="row">
+                    <div class="col">Rounds:</div>
+                    <div class="col">{{ game.rounds }}</div>
+                </div>
+                <div class="row">
+                    <div class="col">Duration:</div>
+                    <div class="col mb-3">{{ game.created | date:"HH:mm" }} - {{ game.finished | date:"HH:mm" }}</div>
+                </div>
+
+            </div>
+            <div class="card-footer pt-2 pb-2">
+              <div class="row mt-0 mb-0 justify-content-center text-center">
+                <div class="col"><button [routerLink]="['/home/game', game.id]" class="btn btn-sm btn-outline-dark mb-0">Details</button></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<app-game-form (newGameEvent)="gameCreated($event)" *ngIf="player" [player]="player"></app-game-form>

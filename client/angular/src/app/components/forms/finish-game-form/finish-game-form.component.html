@@ -1,0 +1,35 @@
+<div class="modal fade" id="modal-game" tabindex="-1" role="dialog" aria-labelledby="modal-game-label"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-game-label">Finish Game</h5>
+        <button #closeModal type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mt-1">
+        <div class="row justify-content-center">
+          <div class="col-xl-8 col-lg-10">
+
+            <form [formGroup]="gameResultsForm" (submit)="onSubmit()">
+              <div formArrayName="results">
+                <p class="text-center">Set final stakes for each Player</p>
+                <div *ngFor="let item of resultsFormArray.controls; let i = index" [formGroupName]="i">
+                  <div class="form-group row">
+                    <label [innerText]="item.get('playerName').value+':'" for="stake" class="col-sm-4 col-form-label"></label>
+                    <div class="col-sm-8">
+                      <input formControlName="stake" type="number" name="stake" id="stake" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button [disabled]="gameResultsForm.invalid" class="btn btn-outline-dark btn-block mt-5">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

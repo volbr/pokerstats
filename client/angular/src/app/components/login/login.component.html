@@ -1,0 +1,28 @@
+<main role="main" class="container">
+  <div class="text-center">
+    <form class="form-signin">
+      <img class="mb-4" src="assets/images/logo.png" alt="" width="100" height="100">
+      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+      <label for="inputUsername" class="sr-only">Username</label>
+      <input [(ngModel)]="user.username" name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+      <span *ngFor="let error of authService.errors.username"><br />{{ error }}</span>
+
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input [(ngModel)]="user.password" name="password" type="password" class="form-control" placeholder="Password" required>
+      <span *ngFor="let error of authService.errors.password"><br />{{ error }}</span>
+
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+
+      <button (click)="login()" class="btn btn-lg btn-outline-dark btn-block">Sign in</button>
+      <div>
+          <span *ngFor="let error of authService.errors.non_field_errors">{{ error }}<br /></span>
+      </div>
+      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+    </form>
+  </div>
+</main>
