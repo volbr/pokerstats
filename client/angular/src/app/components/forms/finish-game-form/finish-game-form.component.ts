@@ -50,8 +50,8 @@ export class FinishGameFormComponent implements OnInit {
 
   onSubmit() {
     this.dataService.finishGame(this.resultsFormArray.value).subscribe(results => {
-      // TODO: error handling
       this.dataService.setPlayerCurrentGame(null);
+      // TODO: close modal using styles
       this.closeModal.nativeElement.click();
       this.router.navigate(['/home/games'])
     });

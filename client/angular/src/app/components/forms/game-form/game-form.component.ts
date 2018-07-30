@@ -23,11 +23,11 @@ export class GameFormComponent implements OnInit {
   }
 
   onSubmit() {
+    // TODO: close modal using styles
     this.closeModal.nativeElement.click();
     this.game.players.push(this.player.id);
     this.game.creator = this.player.id;
     this.dataService.createGame(this.game).subscribe(game => {
-      // TODO: error handling
       this.updatePlayer(game)
     });
   }

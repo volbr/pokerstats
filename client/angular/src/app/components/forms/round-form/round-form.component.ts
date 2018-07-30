@@ -32,8 +32,8 @@ export class RoundFormComponent implements OnInit {
   onSubmit() {
     this.round.id = this.game.round;
     this.dataService.updateRound(this.round).subscribe(round => {
-      // TODO: error handling
       this.newRoundEvent.emit();
+      // TODO: close modal using styles
       this.closeModal.nativeElement.click();
       this.form.reset();
     });

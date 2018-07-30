@@ -23,8 +23,8 @@ export class RebuyFormComponent implements OnInit {
   onSubmit() {
     this.rebuy.round = this.game.round;
     this.dataService.createRebuy(this.rebuy).subscribe(rebuy => {
-      // TODO: error handling
       this.form.reset();
+      // TODO: close modal using styles
       this.closeModal.nativeElement.click();
       this.newRebuyEvent.emit();
     });
